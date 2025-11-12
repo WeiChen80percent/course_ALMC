@@ -1,0 +1,29 @@
+# Compiled output
+*.o
+*.obj
+*.out
+*.exe
+*.bin
+*.elf
+*.com
+
+# Assembler listings and debug information
+*.lst
+*.map
+*.sym
+*.dbg
+
+# Temporary files
+*~
+*.bak
+*.tmp
+*.log
+*.swp
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.DS_Store
+Thumbs.db
