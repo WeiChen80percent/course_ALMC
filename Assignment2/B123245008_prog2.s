@@ -4,14 +4,15 @@
 .align	2   
 .global	main
 .data  
+
 result_header: 
-.asciz "PC  instruction\n"
+.asciz "PC    instruction\n"              
 normal_instr:
-.asciz "%d    %s\n"
+.asciz "%-3d   %s\n"
 swi_instr: 
-.asciz "%d   SWI   #%d\n"
+.asciz "%-3d   SWI    #%d\n"
 unknown_instr:
-.asciz "%d   --\n"
+.asciz "%-3d   --\n"
 
 s_ldr: .asciz "LDR"
 s_str: .asciz "STR"
@@ -77,9 +78,19 @@ deasm_loop:
     B handle_unknown
 
 handle_dp:
-    MOV r0, r1, LSR #4
-    AND r0, r0, #0x0000000F
-    CMP r0, #9
+    @handle multiply
+    MOV r0, r1
+    LDR r2, =0x0F0000F0
+    AND r0, r0, r2
+    CMP r0, #0x00000090
+    BEQ handle_unknown
+
+    @handle swap
+    MOV r0, r1
+    LDR r2, =0x0FB00FF0
+    AND r0, r0, r2
+    LDR r2, =0x01000090
+    CMP r0, r2
     BEQ handle_unknown
 
     MOV r1, r1, LSR #21 @see what [24:21] equal to => convert it into 0-15
@@ -107,7 +118,6 @@ handle_mem:
 
     B next_iteration
 
-
 handle_swi:
     BIC r2, r1, #0xFF000000 @arg 2 => swi number
     MOV r1, r5 @arg 1 => pc value
@@ -115,12 +125,14 @@ handle_swi:
     BL printf
 
     B next_iteration
+
 handle_unknown:
     MOV r1, r5
     LDR r0, =unknown_instr
     BL printf
 
     B next_iteration
+    
 next_iteration:
     ADD r5, r5, #4
     B deasm_loop

@@ -8,6 +8,11 @@ L1:	and r1, r1, #1
 	str r5, [r2], #6
 	RSB r2,r15, #8
 	
+	MUL r2,r3,r4
+	LDMIA r1!, {r0, r5, r6}
+	MLA r1, r2, r3, r4
+	SWP r5, r6, [r7]
+	SWPB r0, r1, [r2]
 	SWI #0
 	
 	
